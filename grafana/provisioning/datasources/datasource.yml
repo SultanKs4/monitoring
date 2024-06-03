@@ -48,3 +48,15 @@ datasources:
     version: 1
     # <bool> allow users to edit datasources from the UI.
     editable: false
+  # custom plugin data source for mongodb
+  - name: 'mongodb-grafana-plugin'
+    type: 'mongodb-grafana-datasource'
+    access: proxy
+    isDefault: false
+    orgId: 1
+    version: 1
+    editable: true
+    jsonData:
+      dummy: 'tbd'
+    secureJsonData:
+      dummy: 'tbd'

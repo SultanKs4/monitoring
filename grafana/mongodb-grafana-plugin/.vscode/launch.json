@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/backend/index.mjs",
+            "envFile": "${workspaceFolder}/backend/.envrc"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch sls Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "cwd": "${workspaceFolder}/backend",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "sls-debug"
+            ],
+            "attachSimplePort": 9229,
+            "sourceMaps": true,
+            "envFile": "${workspaceFolder}/backend/.envrc"
+        }
+    ]
+}
