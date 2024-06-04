@@ -31,8 +31,8 @@ services:
       - '--collector.processes'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
   cadvisor:
-    image: google/cadvisor:latest
-    container_name: monitoring_cadvisor
+    image: gcr.io/cadvisor/cadvisor
+    container_name: cadvisor
     deploy:
       mode: replicated
       replicas: 1
@@ -108,7 +108,7 @@ services:
           memory: 50MB
           cpus: '0.10'
     networks:
-      - monitoring-external
+      - api_backbone
     ports:
       - 4000:4000
     extra_hosts:
@@ -139,7 +139,7 @@ services:
       GF_SECURITY_ADMIN_USER:
       GF_SECURITY_ADMIN_PASSWORD:
     ports:
-      - 3000:3000
+      - 3001:3000
     networks:
       - monitoring
     volumes:
@@ -162,5 +162,5 @@ volumes:
 networks:
   monitoring:
     driver: bridge
-  monitoring-external:
+  api_backbone:
     external: true
