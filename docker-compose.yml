@@ -53,6 +53,8 @@ services:
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - monitoring
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
