@@ -30,6 +30,29 @@ services:
       - '--collector.systemd'
       - '--collector.processes'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+  cadvisor:
+    image: google/cadvisor:latest
+    container_name: monitoring_cadvisor
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: 250MB
+          cpus: '1'
+        reservations:
+          memory: 50MB
+          cpus: '0.10'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -63,6 +86,7 @@ services:
       - monitoring
     depends_on:
       - node-exporter
+      - cadvisor
   mongodb-grafana-datasource-backend:
     build:
       context: ./grafana/mongodb-grafana-plugin/backend
@@ -84,9 +108,11 @@ services:
           memory: 50MB
           cpus: '0.10'
     networks:
-      - monitoring
+      - monitoring-external
     ports:
       - 4000:4000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
@@ -136,3 +162,5 @@ volumes:
 networks:
   monitoring:
     driver: bridge
+  monitoring-external:
+    external: true
