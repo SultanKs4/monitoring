@@ -88,7 +88,6 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/mongodb-grafana-plugin/frontend/dist/:/var/lib/grafana/plugins/mongodb-grafana-datasource
     healthcheck:
       test: "wget -O - -T 5 -S http://localhost:3000/api/health"
       interval: 30s
