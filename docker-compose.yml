@@ -2,21 +2,9 @@ services:
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
-    deploy:
-      mode: replicated
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-        max_attempts: 10
-        window: 120s
-      resources:
-        limits:
-          memory: 250MB
-          cpus: '1'
-        reservations:
-          memory: 50MB
-          cpus: '0.10'
+    cpus: 1
+    mem_limit: 250m
+    restart: unless-stopped
     networks:
       - monitoring
     volumes:
@@ -33,6 +21,9 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor
     container_name: cadvisor
+    cpus: 1
+    mem_limit: 250m
+    restart: unless-stopped
     deploy:
       mode: replicated
       replicas: 1
@@ -58,21 +49,9 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    deploy:
-      mode: replicated
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-        max_attempts: 10
-        window: 120s
-      resources:
-        limits:
-          memory: 250MB
-          cpus: '1'
-        reservations:
-          memory: 50MB
-          cpus: '0.10'
+    cpus: 1
+    mem_limit: 250m
+    restart: unless-stopped
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -89,50 +68,12 @@ services:
     depends_on:
       - node-exporter
       - cadvisor
-  mongodb-grafana-datasource-backend:
-    build:
-      context: ./grafana/mongodb-grafana-plugin/backend
-      dockerfile: Dockerfile
-    container_name: mongodb-grafana-datasource-backend
-    deploy:
-      mode: replicated
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-        max_attempts: 10
-        window: 120s
-      resources:
-        limits:
-          memory: 250MB
-          cpus: '1'
-        reservations:
-          memory: 50MB
-          cpus: '0.10'
-    networks:
-      - api_backbone
-    ports:
-      - 4000:4000
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    deploy:
-      mode: replicated
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-        max_attempts: 10
-        window: 120s
-      resources:
-        limits:
-          memory: 250MB
-          cpus: '1'
-        reservations:
-          memory: 50MB
-          cpus: '0.10'
+    cpus: 1
+    mem_limit: 250m
+    restart: unless-stopped
     environment:
       GF_INSTALL_PLUGINS: 'grafana-clock-panel,grafana-simple-json-datasource'
       GF_DEFAULT_APP_MODE: 'development'
@@ -164,5 +105,3 @@ volumes:
 networks:
   monitoring:
     driver: bridge
-  api_backbone:
-    external: true
